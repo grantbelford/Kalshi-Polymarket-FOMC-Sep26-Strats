@@ -10,8 +10,8 @@ Both bots poll their venues on a ~15s cadence and append one JSON record per cyc
 
 ## Data assumptions
 
-Prices are top-of-book from the Kalshi REST/WebSocket API and the Polymarket CLOB. Fees are modeled per leg and price-dependent: Kalshi `0.07·P·(1−P)`, Polymarket taker read live from the market's `feeSchedule` (sports markets ≈ `0.03`), plus `0.001`/leg slippage. A raw edge is only counted as an *executable* opportunity when it clears the gate: a **20–500 bp** net edge with a **<10¢** spread; edges above 500 bp are flagged as thin/dislocated-book artifacts and rejected.
+Prices are top-of-book from the Kalshi REST/WebSocket API and the Polymarket CLOB. Fees are modelled per leg and price-dependent: Kalshi `0.07·P·(1−P)` and Polymarket `0.05·min(P,1−P)` — the taker rates the monitor logged for these FOMC decision markets — plus `0.001`/leg slippage. A raw edge is only counted as an *executable* opportunity when it clears the gate: a **20–500 bp** net edge with a **<10¢** spread; edges above 500 bp are flagged as thin/dislocated-book artifacts and rejected.
 
 ## Known limitations
 
-Top-of-book **sizes are not logged**, so paper fills are depth-capped by a fixed notional rather than by true book depth — the fill model is deliberately simplified. The headline PnL comes from a single-shot \$10k deployment that locks each bucket once and holds to resolution, so it is sensitive to the window start; the annualized figures normalize a short 11-day window and are **not** strategy-capacity estimates. Strat2's "edge" is a Bregman (information-geometry) divergence, not a raw price gap.
+Top-of-book **sizes are not logged**, so paper fills are depth-capped by a fixed notional rather than by true book depth — the fill model is deliberately simplified. The headline PnL comes from a single-shot \$10k deployment that locks each bucket once and holds to resolution, so it is sensitive to the window start; the annualized figures normalize a short 11-day window and are **not** strategy-capacity estimates. Strat2's "edge" is a Bregman (information-geometry) divergence, not a raw price gap. Everything here is **read-only** — no orders are ever sent.
